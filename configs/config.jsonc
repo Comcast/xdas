@@ -1,0 +1,88 @@
+// SPDX-License-Identifier: Apache-2.0
+// SPDX-FileContributor: thedevop (J)
+
+/* Example config file for XDAS. Both block style and line comments are acceptable. */
+{
+    "Web": {
+        "Server": {  // Complete Web config can be found at: https://golang.org/pkg/net/http/#Server
+            "Addr": ":8091",
+            "ReadTimeout": 5000000000,      // unit in ns
+            "WriteTimeout": 10000000000,
+            "IdleTimeout": 60000000000
+        },
+        "TLS": {
+            "CertFile": "",
+            "KeyFile": "",
+            "CaFile": ""
+        }
+    },
+    "HClient": {
+        "Client": { // https://golang.org/pkg/net/http/#Client  
+            "Transport": {
+                // "MaxIdleConns": 2000, // default 2000, ensure this is greater than MaxIdleConnsPerHost, or 0 for no limit
+                // "MaxIdleConnsPerHost": 1000, // Ensure this is >= XDAS.Concurrency, default 1K
+                // "IdleConnTimeout": 45000000000 // Default 45s
+            }
+            // "Timeout": 5000000000 // default 5s
+        }, 
+        "TLS": {
+            "CertFile": "",
+            "KeyFile": "",
+            "CaFile": "",
+            "Insecure": true
+        }
+    },
+    "Redis": {  // Complete ClientConfig can be found at: https://godoc.org/github.com/go-redis/redis#UniversalOptions
+        "ClientConfig": {
+            "Addrs": ["", ""] // Need at least 2 to run in Cluster mode
+        },
+        // EncryptionKey has to be 64 bytes of HEX encoded string
+        "EncryptionKey": [
+            "0a0b..."
+        ],
+        "Encryption": 1 // 0 to disable encryption, multiple encryption may be supported in the future, currently only 1 is supported
+    },
+    // All allowed keyspaces must be listed. Use empty string or skip that field to not enforce content-type and encoding validation
+    // If output is not specified, it inherients setting from store, if store is not specified, it inherients setting from input
+    "Keyspaces": {
+        // Each Keyspce can have the following config:
+        //     input - format for POST/PUT request, available settings:
+        //         contentType: "" (default), "application/x-protobuf", "application/json"
+        //         contentEncoding: "" (default), "zstd"
+        //     store - format stored in Redis, available settings same as input
+        //     output - format for GET request, available settings same as input
+        //     findX - findX service, available settings:
+        //         enabled: bool (default false)
+        //         URL:
+        //         channelBufferSize: int (default 128)
+        //         thread: int (default 1)
+        //     ttl - default TTL for keyspace (default 168h)
+        //     kind - type of data structure for the keyspace, can be string, atomic and hashes (default string)
+        // default contentEncoding and contentType are ""
+        "abc": {"input": {"contentType": "application/x-protobuf", "contentEncoding": ""},
+                "store": {"contentType": "application/x-protobuf", "contentEncoding": ""},
+                "output": {"contentType": "application/x-protobuf", "contentEncoding": ""},
+                // Default enabled: false, ChannelBufferSize: 128, Thread: 1
+                // findX will call the findX svc using <URL><id>
+                "findX": {"Enabled": true, "URL": "http://someDNS/somePath/", "ChannelBufferSize": 200, "Thread": 2},
+                "ttl": "10h", "Kind": "hashes"},
+        "def": {"input": {"contentType": "application/json", "contentEncoding": "zstd"},
+                "store": {"contentType": "application/x-protobuf", "contentEncoding": "zstd"},
+                "output": {"contentType": "application/json", "contentEncoding": "zstd"},
+                "ttl": "168h"},
+        "ghi": {"atomicInc": true, // atomicInc is depreciating, set kind to atomic instead. operation using ".../inc/<keyspace>"
+                "kind": "atomic", "ttl": "168h"},
+        "xyz": {"input": {"contentType": "application/json", "contentEncoding": ""},
+                "findX": {"Enabled": true, "URL": "http://someDNS/somePath/"},
+                "ttl": "168h"},
+        "test": {"ttl": "168h"}
+    },
+    "DeviceMapping": {
+        "TTL": "8760h",     // TTL for the field in dm keyspace
+        "AccelTTL": "168h"  // AcceleratedTTL for the field in dm keyspace
+    },
+    "Multipart": {
+        // Keyspaces specifies the default keyspaces to return for multipart GET
+        "Keyspaces": ["abc", "xyz"]
+    }
+}
