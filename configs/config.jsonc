@@ -1,12 +1,24 @@
-// SPDX-License-Identifier: Apache-2.0
-// SPDX-FileContributor: thedevop (J)
-
+/*
+ * Copyright 2025 Comcast Cable Communications Management, LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 /* Example config file for XDAS. Both block style and line comments are acceptable. */
 {
     "Web": {
-        "Server": {  // Complete Web config can be found at: https://golang.org/pkg/net/http/#Server
+        "Server": { // Complete Web config can be found at: https://golang.org/pkg/net/http/#Server
             "Addr": ":8091",
-            "ReadTimeout": 5000000000,      // unit in ns
+            "ReadTimeout": 5000000000, // unit in ns
             "WriteTimeout": 10000000000,
             "IdleTimeout": 60000000000
         },
@@ -24,7 +36,7 @@
                 // "IdleConnTimeout": 45000000000 // Default 45s
             }
             // "Timeout": 5000000000 // default 5s
-        }, 
+        },
         "TLS": {
             "CertFile": "",
             "KeyFile": "",
@@ -32,9 +44,12 @@
             "Insecure": true
         }
     },
-    "Redis": {  // Complete ClientConfig can be found at: https://godoc.org/github.com/go-redis/redis#UniversalOptions
+    "Redis": { // Complete ClientConfig can be found at: https://godoc.org/github.com/go-redis/redis#UniversalOptions
         "ClientConfig": {
-            "Addrs": ["", ""] // Need at least 2 to run in Cluster mode
+            "Addrs": [
+                "",
+                ""
+            ] // Need at least 2 to run in Cluster mode
         },
         // EncryptionKey has to be 64 bytes of HEX encoded string
         "EncryptionKey": [
@@ -59,30 +74,74 @@
         //     ttl - default TTL for keyspace (default 168h)
         //     kind - type of data structure for the keyspace, can be string, atomic and hashes (default string)
         // default contentEncoding and contentType are ""
-        "abc": {"input": {"contentType": "application/x-protobuf", "contentEncoding": ""},
-                "store": {"contentType": "application/x-protobuf", "contentEncoding": ""},
-                "output": {"contentType": "application/x-protobuf", "contentEncoding": ""},
-                // Default enabled: false, ChannelBufferSize: 128, Thread: 1
-                // findX will call the findX svc using <URL><id>
-                "findX": {"Enabled": true, "URL": "http://someDNS/somePath/", "ChannelBufferSize": 200, "Thread": 2},
-                "ttl": "10h", "Kind": "hashes"},
-        "def": {"input": {"contentType": "application/json", "contentEncoding": "zstd"},
-                "store": {"contentType": "application/x-protobuf", "contentEncoding": "zstd"},
-                "output": {"contentType": "application/json", "contentEncoding": "zstd"},
-                "ttl": "168h"},
-        "ghi": {"atomicInc": true, // atomicInc is depreciating, set kind to atomic instead. operation using ".../inc/<keyspace>"
-                "kind": "atomic", "ttl": "168h"},
-        "xyz": {"input": {"contentType": "application/json", "contentEncoding": ""},
-                "findX": {"Enabled": true, "URL": "http://someDNS/somePath/"},
-                "ttl": "168h"},
-        "test": {"ttl": "168h"}
+        "abc": {
+            "input": {
+                "contentType": "application/x-protobuf",
+                "contentEncoding": ""
+            },
+            "store": {
+                "contentType": "application/x-protobuf",
+                "contentEncoding": ""
+            },
+            "output": {
+                "contentType": "application/x-protobuf",
+                "contentEncoding": ""
+            },
+            // Default enabled: false, ChannelBufferSize: 128, Thread: 1
+            // findX will call the findX svc using <URL><id>
+            "findX": {
+                "Enabled": true,
+                "URL": "http://someDNS/somePath/",
+                "ChannelBufferSize": 200,
+                "Thread": 2
+            },
+            "ttl": "10h",
+            "Kind": "hashes"
+        },
+        "def": {
+            "input": {
+                "contentType": "application/json",
+                "contentEncoding": "zstd"
+            },
+            "store": {
+                "contentType": "application/x-protobuf",
+                "contentEncoding": "zstd"
+            },
+            "output": {
+                "contentType": "application/json",
+                "contentEncoding": "zstd"
+            },
+            "ttl": "168h"
+        },
+        "ghi": {
+            "atomicInc": true, // atomicInc is depreciating, set kind to atomic instead. operation using ".../inc/<keyspace>"
+            "kind": "atomic",
+            "ttl": "168h"
+        },
+        "xyz": {
+            "input": {
+                "contentType": "application/json",
+                "contentEncoding": ""
+            },
+            "findX": {
+                "Enabled": true,
+                "URL": "http://someDNS/somePath/"
+            },
+            "ttl": "168h"
+        },
+        "test": {
+            "ttl": "168h"
+        }
     },
     "DeviceMapping": {
-        "TTL": "8760h",     // TTL for the field in dm keyspace
-        "AccelTTL": "168h"  // AcceleratedTTL for the field in dm keyspace
+        "TTL": "8760h", // TTL for the field in dm keyspace
+        "AccelTTL": "168h" // AcceleratedTTL for the field in dm keyspace
     },
     "Multipart": {
         // Keyspaces specifies the default keyspaces to return for multipart GET
-        "Keyspaces": ["abc", "xyz"]
+        "Keyspaces": [
+            "abc",
+            "xyz"
+        ]
     }
 }
