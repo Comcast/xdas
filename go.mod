@@ -1,9 +1,9 @@
 module xdas
 
-go 1.21
+go 1.22
 
 require (
-	github.com/go-chi/chi/v5 v5.2.2
+	github.com/go-chi/chi/v5 v5.2.4
 	github.com/go-redis/redis/v7 v7.4.1
 	github.com/klauspost/compress v1.17.9
 	github.com/prometheus/client_golang v1.20.5
